@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <title>Robotic</title>
+    <link rel="stylesheet" type="text/css" href="bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
+  </head>
+
+  <body class="container" tabindex="-1">
+    <div class="row">
+      <div class="col-md-12">
+        <h3>
+          <u>Robotic</u>
+        </h3>
+        <form>
+          <div class="form-group" id="testCaseNameDiv">
+            <input class="form-control" id="testCaseName" placeholder="Test Case Name" value="Default">
+          </div>
+          <div class="form-group" id="postUrlDiv">
+            <input class="form-control" id="postUrl" placeholder="Post URL" value="http://localhost:3000//robotcorder_web/test_cases">
+          </div>
+          <button class="btn btn-success" id="record" tabindex="-1" title="record user action">
+            Start Recording
+          </button>
+        </form>
+
+        <div>
+          <button class="btn btn-info" id="assert" tabindex="-1" title="assert text">
+            Assert
+          </button>
+
+          <button class="btn btn-danger" id="stop" tabindex="-1" title="stop the recording">
+            Stop
+          </button>
+        </span>
+      </div>
+      <script src="popup.js"></script>
+    </div>
+  </div>
+  <footer>&nbsp</footer>
+</body>
+</html>
