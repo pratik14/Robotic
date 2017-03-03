@@ -48,6 +48,10 @@
   background-color: #fff59d !important;
 }
 
+.xh-selected {
+  background-color: green !important;
+}
+
 img.xh-highlight {
   opacity: 0.5 !important;
 }

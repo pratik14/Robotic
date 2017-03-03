@@ -3,6 +3,7 @@
 var host = chrome;
 
 var SHIFT_KEYCODE = 16;
+var ESC_KEYCODE = 27;
 var currEl = null;
 
 host.runtime.sendMessage({operation: "load"});
@@ -18,6 +19,8 @@ host.runtime.onMessage.addListener(
       document.addEventListener('mousemove', recordMouseMovement, true);
     }
     else if (request.operation == "stop") {
+      Selection.unSelected();
+      Selection.clearHighlights();
       document.removeEventListener("change", recordChange, true);
       document.removeEventListener("click", recordClick, true);
       document.removeEventListener('keydown', recordKeyDown, true);
@@ -51,7 +54,7 @@ function recordMouseMovement(event) {
     return;
   }
   currEl = event.target;
-  Selection.parse(getTime(), currEl)
+  Selection.highlight(currEl);
 };
 
 function recordKeyDown(event) {
@@ -61,10 +64,16 @@ function recordKeyDown(event) {
   if (!ctrlKey && event.keyCode === SHIFT_KEYCODE) {
     let attr = Selection.parse(getTime(), currEl)
 
-    host.runtime.sendMessage({operation: "action", script: attr});
+    // host.runtime.sendMessage({operation: "action", script: attr});
+  }
+
+  if (!ctrlKey && event.keyCode === ESC_KEYCODE) {
+    Selection.unSelected();
+    Selection.clearHighlights();
     document.removeEventListener('keydown', recordKeyDown, true);
     document.removeEventListener('mousemove', recordMouseMovement, true);
   }
+
 };
 
 

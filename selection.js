@@ -1,16 +1,5 @@
 'use strict';
 
-var clearHighlights = function() {
-  var els = document.querySelectorAll('.xh-highlight');
-  if (els.length > 0){
-    els[0].classList.remove('xh-highlight');
-  }
-};
-
-var highlight = function(element){
-  element.className += ' xh-highlight';
-}
-
 ///////  Function to evaulate xpath /////////
 var XPath = {
   get(element){
@@ -43,9 +32,32 @@ var XPath = {
 
 ///////// Main Function /////////
 var Selection = {
+  clearHighlights() {
+    var els = document.querySelectorAll('.xh-highlight');
+    if (els.length > 0){
+      els[0].classList.remove('xh-highlight');
+    }
+  },
+
+  highlight(element){
+    Selection.clearHighlights();
+    element.className += ' xh-highlight';
+  },
+
+  unSelected() {
+    var els = document.querySelectorAll('.xh-selected');
+    var i;
+    for (i = 0; i < els.length; i++) {
+      els[i].classList.remove('xh-selected');
+    }
+  },
+
+  selected(element){
+    element.className += ' xh-selected';
+  },
+
   parse(time, element){
-    clearHighlights();
-    highlight(element)
+    Selection.selected(element)
 
     var attr = {
       time: time,
