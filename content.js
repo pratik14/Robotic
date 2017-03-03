@@ -31,9 +31,8 @@ function getTime(){
 }
 
 function recordChange(event){
-  let attr = {time: getTime(), xpath: XPath.get(event.target)};
-
-  if (handleByChange(attr.type)) {
+  let attr = {time: getTime(), xpath: XPath.get(event.target), value: event.target.value};
+  if (handleByChange(event.target)) {
     Object.assign(attr, {trigger: "change"});
     host.runtime.sendMessage({operation: "action", script: attr});
   }
@@ -41,8 +40,7 @@ function recordChange(event){
 
 function recordClick(event){
   let attr = {time: getTime(), xpath: XPath.get(event.target)};
-
-  if (!handleByChange(attr.type)) {
+  if (!handleByChange(event.target)) {
     Object.assign(attr, {trigger: "click"});
     host.runtime.sendMessage({operation: "action", script: attr});
   }
@@ -70,6 +68,10 @@ function recordKeyDown(event) {
 };
 
 
-function handleByChange(type){
-  return ["text", "file", "select"].some(n => type === n);
+function handleByChange(target){
+  var type = event.target.tagName.toUpperCase();
+  if(type == 'INPUT' && event.target.type.toUpperCase() == 'SUBMIT'){
+    return false;
+  }
+  return ["INPUT", "FILE", "SELECT"].some(n => type === n);
 }

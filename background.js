@@ -50,6 +50,9 @@ function startRecording(){
       value: recordTab.url,
       time: 0,
       trigger: 'record'
+    },
+    {
+       trigger: 'set_window_size'
     }];
     content.sendMessage(tabs[0].id, { operation: 'record' });
   });
