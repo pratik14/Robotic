@@ -63,7 +63,6 @@ function startRecording(){
 }
 
 function stopRecording(){
-  recordTab = 0;
   content.query(tab, (tabs) => {
     content.sendMessage(tabs[0].id, { operation: "stop" });
   });
@@ -87,7 +86,6 @@ function postList(){
 
 function startAssertion(){
   content.query(tab, (tabs) => {
-    recordTab = tabs[0];
     content.sendMessage(tabs[0].id, {
       operation: 'assert',
     });

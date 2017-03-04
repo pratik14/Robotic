@@ -6,7 +6,7 @@
   "description": "Record user activity on browser and send them on specified URL",
 
   "background": {
-    "scripts": ["xhr.js", "background.js"],
+    "scripts": ["xhr.js", "context_menu.js", "background.js"],
     "persistent": true
   },
 
@@ -25,5 +25,5 @@
     "default_popup": "popup.html"
   },
 
-  "permissions": ["<all_urls>", "activeTab", "tabs", "downloads", "storage", "notifications"]
+  "permissions": ["<all_urls>", "activeTab", "tabs", "downloads", "storage", "notifications", "contextMenus"]
 }

@@ -26,6 +26,16 @@ host.runtime.onMessage.addListener(
       document.removeEventListener('keydown', recordKeyDown, true);
       document.removeEventListener('mousemove', recordMouseMovement, true);
     }
+    else if (request.operation == "yee") {
+      var cusid_ele = document.getElementsByClassName('xh-selected');
+      var time = getTime();
+      for (var i = 0; i < cusid_ele.length; ++i) {
+        var item = cusid_ele[i];
+        let attr = {time: time, xpath: XPath.get(item), value: item.value , trigger: request.opt_name };
+        host.runtime.sendMessage({operation: "action", script: attr});
+        time = time + 21;
+      }
+    }
   }
 );
 
@@ -66,9 +76,7 @@ function recordKeyDown(event) {
   var shiftKey = event.shiftKey;
 
   if (!ctrlKey && event.keyCode === SHIFT_KEYCODE) {
-    let attr = Selection.parse(getTime(), currEl)
-
-    // host.runtime.sendMessage({operation: "action", script: attr});
+    Selection.selected(currEl)
   }
 
   if (!ctrlKey && event.keyCode === ESC_KEYCODE) {
