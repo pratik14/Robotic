@@ -42,7 +42,11 @@ function recordChange(event){
 }
 
 function recordClick(event){
-  let attr = {time: getTime(), xpath: XPath.get(event.target)};
+  var value = event.target.value;
+  if(typeof(event.target.value) == "undefined"){
+    value = event.target.innerText;
+  }
+  let attr = {time: getTime(), xpath: XPath.get(event.target), value: value };
   if (!handleByChange(event.target)) {
     Object.assign(attr, {trigger: "click"});
     host.runtime.sendMessage({operation: "action", script: attr});
