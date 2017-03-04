@@ -13,6 +13,9 @@ storage.set({operation: 'stop'});
 host.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     let operation = request.operation;
+    if(list.length == 0 && operation == 'load'){
+      return;
+    }
 
     setStateOperation(operation);
 
@@ -46,14 +49,15 @@ function setStateOperation(operation){
 function startRecording(){
   content.query(tab, (tabs) => {
     recordTab = tabs[0];
-    list = [{
+    selection({
       value: recordTab.url,
       time: 0,
       trigger: 'record'
-    },
-    {
-       trigger: 'set_window_size'
-    }];
+    })
+    selection({
+      trigger: 'set_window_size',
+      time: 21
+    })
     content.sendMessage(tabs[0].id, { operation: 'record' });
   });
 }
@@ -78,6 +82,7 @@ function postList(){
   storage.get({url: '', name: ''}, (state) =>{
     Xhr.post(state.url, state.name);
   })
+  list = [];
 }
 
 function startAssertion(){
@@ -92,6 +97,7 @@ function startAssertion(){
 function selection(item) {
   if (list.length == 0) {
     list.push(item);
+    show_notification();
     return;
   }
 
@@ -101,6 +107,7 @@ function selection(item) {
 
   if (Math.abs(item.time - prevItem.time) > 20) {
     list.push(item);
+    show_notification();
     return;
   }
 
@@ -113,4 +120,21 @@ function selection(item) {
   }
 
   list.push(item);
+  show_notification();
+}
+
+function show_notification(){
+  var item = list[list.length - 1];
+  var notification_for_trigger = ['record', 'click', 'change'];
+  if(notification_for_trigger.indexOf(item.trigger) == -1){
+    return
+  }
+  var message = item.trigger + '-' + item.value;
+  var notifOptions = {
+    type: "basic",
+    iconUrl: "icon48.png",
+    title: "Event Added",
+    message: message
+  };
+  chrome.notifications.create('limitNotif', notifOptions);
 }
