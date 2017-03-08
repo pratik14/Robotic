@@ -130,7 +130,7 @@ function show_notification(){
   var message = item.trigger + '-' + item.value;
   var notifOptions = {
     type: "basic",
-    iconUrl: "icon48.png",
+    iconUrl: "images/icon-48.png",
     title: "Event Added",
     message: message
   };
