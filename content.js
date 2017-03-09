@@ -31,10 +31,11 @@ host.runtime.onMessage.addListener(
       var time = getTime();
       for (var i = 0; i < cusid_ele.length; ++i) {
         var item = cusid_ele[i];
-        let attr = {time: time, xpath: XPath.get(item), value: item.value , trigger: request.opt_name };
+        let attr = {time: time, xpath: XPath.get(item), value: item.innerText , trigger: request.opt_name };
         host.runtime.sendMessage({operation: "action", script: attr});
         time = time + 21;
       }
+      stopAsserting();
     }
   }
 );
@@ -80,13 +81,16 @@ function recordKeyDown(event) {
   }
 
   if (!ctrlKey && event.keyCode === ESC_KEYCODE) {
-    Selection.unSelected();
-    Selection.clearHighlights();
-    document.removeEventListener('keydown', recordKeyDown, true);
-    document.removeEventListener('mousemove', recordMouseMovement, true);
+    stopAsserting();
   }
-
 };
+
+function stopAsserting(){
+  Selection.unSelected();
+  Selection.clearHighlights();
+  document.removeEventListener('keydown', recordKeyDown, true);
+  document.removeEventListener('mousemove', recordMouseMovement, true);
+}
 
 
 function handleByChange(target){

@@ -10,11 +10,30 @@ function isInt(value) {
 }
 
 chrome.contextMenus.create(menuItem);
-chrome.contextMenus.create({
-  id: 'Element',
-  title: 'Element',
-  parentId: 'Robotic'
-});
+// chrome.contextMenus.create({
+//   id: 'Element',
+//   title: 'Element',
+//   parentId: 'Robotic'
+// });
+//
+// chrome.contextMenus.create({
+//   id: 'Mouse Over',
+//   title: 'Mouse Over',
+//   parentId: 'Robotic'
+// });
+
+subMenu = [
+  'Element',
+  'Mouse Over',
+]
+
+for(i=0;i<subMenu.length;i++){
+  chrome.contextMenus.create({
+    id: elementOpts[i],
+    title: elementOpts[i],
+    parentId: 'Robotic'
+  });
+}
 
 elementOpts = [
   'Should Be Disabled',
@@ -25,6 +44,8 @@ elementOpts = [
   'Should Not Contain'
 ]
 
+allOpt = elementOpts + subMenu;
+
 for(i=0;i<elementOpts.length;i++){
   chrome.contextMenus.create({
     id: elementOpts[i],
@@ -34,11 +55,15 @@ for(i=0;i<elementOpts.length;i++){
 }
 
 chrome.contextMenus.onClicked.addListener(function(clickData){
-  var roboticOpt = elementOpts.indexOf(clickData.menuItemId) != -1;
+  var roboticOpt = allOpt.indexOf(clickData.menuItemId) != -1;
   if (roboticOpt){
     var content = host.tabs;
     content.query({active: true}, (tabs) => {
-      content.sendMessage(tabs[0].id, { operation: "yee", opt_name: clickData.menuItemId });
+      var opt_name = clickData.menuItemId;
+      if(clickData.parentMenuItemId == 'Element'){
+        opt_name = 'Element ' + opt_name
+      }
+      content.sendMessage(tabs[0].id, { operation: "yee", opt_name: opt_name });
     });
   }
 });

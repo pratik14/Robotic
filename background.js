@@ -47,6 +47,7 @@ function setStateOperation(operation){
 }
 
 function startRecording(){
+  list = [];
   content.query(tab, (tabs) => {
     recordTab = tabs[0];
     selection({
@@ -79,9 +80,8 @@ function onLoad(){
 
 function postList(){
   storage.get({url: '', name: ''}, (state) =>{
-    Xhr.post(state.url, state.name);
+    Xhr.post(list, state.url, state.name);
   })
-  list = [];
 }
 
 function startAssertion(){
@@ -123,8 +123,11 @@ function selection(item) {
 
 function show_notification(){
   var item = list[list.length - 1];
-  var notification_for_trigger = ['record', 'click', 'change'];
-  if(notification_for_trigger.indexOf(item.trigger) == -1){
+  // var notification_for_trigger = ['record', 'click', 'change'];
+  // if(notification_for_trigger.indexOf(item.trigger) == -1){
+  //   return
+  // }
+  if(item.trigger == 'load' || item.trigger == 'set_window_size'){
     return
   }
   var message = item.trigger + '-' + item.value;

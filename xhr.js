@@ -3,7 +3,7 @@
 var Xhr = {
   defaultUrl: "http://localhost:3000/robotcorder_web/test_cases",
 
-  post(url, name){
+  post(list, url, name){
     var xhr = new XMLHttpRequest();
     xhr.open("POST", url, true);
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
