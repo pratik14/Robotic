@@ -5,6 +5,7 @@ var host = chrome;
 var SHIFT_KEYCODE = 16;
 var ESC_KEYCODE = 27;
 var currEl = null;
+var contextMenuClickedItem = '';
 
 host.runtime.sendMessage({operation: "load"});
 
@@ -27,15 +28,18 @@ host.runtime.onMessage.addListener(
       document.removeEventListener('mousemove', recordMouseMovement, true);
     }
     else if (request.operation == "yee") {
-      var cusid_ele = document.getElementsByClassName('xh-selected');
-      var time = getTime();
-      for (var i = 0; i < cusid_ele.length; ++i) {
-        var item = cusid_ele[i];
-        let attr = {time: time, xpath: XPath.get(item), value: item.innerText , trigger: request.opt_name };
-        host.runtime.sendMessage({operation: "action", script: attr});
-        time = time + 21;
-      }
-      stopAsserting();
+      contextMenuClickedItem = request.opt_name;
+      document.addEventListener('keydown', recordKeyDown, true);
+      document.addEventListener('mousemove', recordMouseMovement, true);
+      // var cusid_ele = document.getElementsByClassName('xh-selected');
+      // var time = getTime();
+      // for (var i = 0; i < cusid_ele.length; ++i) {
+      //   var item = cusid_ele[i];
+      //   let attr = {time: time, xpath: XPath.get(item), value: item.innerText , trigger: request.opt_name };
+      //   host.runtime.sendMessage({operation: "action", script: attr});
+      //   time = time + 21;
+      // }
+      // stopAsserting();
     }
   }
 );
@@ -78,10 +82,13 @@ function recordKeyDown(event) {
 
   if (!ctrlKey && event.keyCode === SHIFT_KEYCODE) {
     Selection.selected(currEl)
+    let attr = {time: getTime(), xpath: XPath.get(currEl), value: currEl.innerText , trigger: contextMenuClickedItem };
+    host.runtime.sendMessage({operation: "action", script: attr});
   }
 
   if (!ctrlKey && event.keyCode === ESC_KEYCODE) {
     stopAsserting();
+    contextMenuClickedItem = '';
   }
 };
 

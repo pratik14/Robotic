@@ -48,6 +48,7 @@ function setStateOperation(operation){
 
 function startRecording(){
   list = [];
+  ContextMenu.add();
   content.query(tab, (tabs) => {
     recordTab = tabs[0];
     selection({
@@ -64,6 +65,7 @@ function startRecording(){
 }
 
 function stopRecording(){
+  ContextMenu.remove();
   content.query(tab, (tabs) => {
     content.sendMessage(tabs[0].id, { operation: "stop" });
   });

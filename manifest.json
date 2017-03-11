@@ -6,7 +6,7 @@
   "description": "Record user activity on browser and send them on specified URL",
 
   "background": {
-    "scripts": ["xhr.js", "context_menu.js", "background.js"],
+    "scripts": ["constant.js", "xhr.js", "context_menu.js", "background.js"],
     "persistent": true
   },
 

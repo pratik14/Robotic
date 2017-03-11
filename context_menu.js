@@ -1,72 +1,50 @@
-var menuItem = {
-  "id": "Robotic",
-  "title": "Robotic"
-};
+'use strict';
 
-function isInt(value) {
-  return !isNaN(value) &&
-  parseInt(Number(value)) == value &&
-  !isNaN(parseInt(value, 10));
-}
+var ContextMenu = {
+  add(){
+    var menuItem = {
+      "id": "Robotic",
+      "title": "Robotic"
+    };
 
-chrome.contextMenus.create(menuItem);
-// chrome.contextMenus.create({
-//   id: 'Element',
-//   title: 'Element',
-//   parentId: 'Robotic'
-// });
-//
-// chrome.contextMenus.create({
-//   id: 'Mouse Over',
-//   title: 'Mouse Over',
-//   parentId: 'Robotic'
-// });
+    var allOpt = [];
 
-subMenu = [
-  'Element',
-  'Mouse Over',
-]
+    chrome.contextMenus.create(menuItem);
 
-for(i=0;i<subMenu.length;i++){
-  chrome.contextMenus.create({
-    id: elementOpts[i],
-    title: elementOpts[i],
-    parentId: 'Robotic'
-  });
-}
-
-elementOpts = [
-  'Should Be Disabled',
-  'Should Be Enabled',
-  'Should Be Visible',
-  'Should Not Be Visible',
-  'Should Contain',
-  'Should Not Contain'
-]
-
-allOpt = elementOpts + subMenu;
-
-for(i=0;i<elementOpts.length;i++){
-  chrome.contextMenus.create({
-    id: elementOpts[i],
-    title: elementOpts[i],
-    parentId: 'Element'
-  });
-}
-
-chrome.contextMenus.onClicked.addListener(function(clickData){
-  var roboticOpt = allOpt.indexOf(clickData.menuItemId) != -1;
-  if (roboticOpt){
-    var content = host.tabs;
-    content.query({active: true}, (tabs) => {
-      var opt_name = clickData.menuItemId;
-      if(clickData.parentMenuItemId == 'Element'){
-        opt_name = 'Element ' + opt_name
+    Object.keys(contextMenuOptions).forEach(function(key,index) {
+      chrome.contextMenus.create({
+        id: key,
+        title: key,
+        parentId: 'Robotic'
+      });
+      for(var propt in contextMenuOptions[key]){
+        var subMenu = contextMenuOptions[key][propt];
+        chrome.contextMenus.create({
+          id: subMenu,
+          title: subMenu,
+          parentId: key
+        });
       }
-      content.sendMessage(tabs[0].id, { operation: "yee", opt_name: opt_name });
     });
-  }
-});
 
-chrome.storage.onChanged.addListener(function(changes, storageName){
-});
+
+
+    chrome.contextMenus.onClicked.addListener(function(clickData){
+      var roboticOpt = allOpt.indexOf(clickData.menuItemId) != -1;
+      if (roboticOpt){
+        var content = host.tabs;
+        content.query({active: true}, (tabs) => {
+          var opt_name = clickData.menuItemId;
+          if(clickData.parentMenuItemId != 'Robotic'){
+            opt_name = clickData.parentMenuItemId + ' ' + opt_name
+          }
+          content.sendMessage(tabs[0].id, { operation: "yee", opt_name: opt_name });
+        });
+      }
+    });
+  },
+
+  remove(){
+    chrome.contextMenus.remove('Robotic')
+  }
+}
