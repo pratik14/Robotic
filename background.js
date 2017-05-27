@@ -6,6 +6,8 @@ var recordingList = [];
 var storage = host.storage.local;
 var content = host.tabs;
 var recordTab = 0;
+//List of trigger name for which no notification should be showed
+var noNotificationList = ['Wait For Condition', 'Set Window Size', 'Open Browser']
 const tab = {active: true, currentWindow: true};
 
 storage.set({operation: 'stop'});
@@ -144,9 +146,8 @@ function selection(item) {
 function show_notification(){
   var item = recordingList[recordingList.length - 1];
 
-  if(item.trigger == 'Wait For Condition' || item.trigger == 'set_window_size'){
-    return
-  }
+  if(noNotificationList.indexOf(item.trigger) > -1) { return; }
+
   var message = item.trigger + '-' + item.value;
   var notifOptions = {
     type: "basic",
