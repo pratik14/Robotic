@@ -40,8 +40,19 @@ function getTime(){
 }
 
 function recordChange(event){
+  var value = event.target.value;
+  if(typeof(event.target.value) == "undefined"){
+    value = event.target.innerText;
+  }
+
   if (handleByChange(event.target)) {
-    let attr = {time: getTime(), locator: XPath.get(event.target), text: event.target.value, trigger: "Input Text"};
+    let attr = {
+      time: getTime(), 
+      locator: XPath.get(event.target), 
+      value: value,
+      text: event.target.value, 
+      trigger: "Input Text"
+    };
     host.runtime.sendMessage({operation: "action", script: attr});
   }
 }
@@ -53,12 +64,7 @@ function recordClick(event){
   }
   let attr = {time: getTime(), locator: XPath.get(event.target), value: value };
   var type = event.target.tagName.toUpperCase();
-  if(type =! 'INPUT'){
-    Object.assign(attr, {text: value, message: 'click on button ' + value });
-  }
-  else{
-    Object.assign(attr, {value: value, message: 'change input to ' + value });
-  }
+  Object.assign(attr, {text: value, message: 'Click on button ' + value });
   if (!handleByChange(event.target)) {
     Object.assign(attr, {trigger: "Click Element"});
     host.runtime.sendMessage({operation: "action", script: attr});
