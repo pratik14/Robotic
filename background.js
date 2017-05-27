@@ -121,7 +121,7 @@ function getLocator(){
 
 function selection(item) {
   item.order_number = recordingList.length + 1;
-  if (recordingList.length > 2) {
+  if (recordingList.length > 1) {
    
     // Time diffrence between events should be atlease 20 miliseconds
     let prevItem = recordingList[recordingList.length - 1];
@@ -129,14 +129,14 @@ function selection(item) {
       return;
     }
 
-    if (item.trigger == "click")
-    return;
+    // if (item.trigger == "click")
+    // return;
 
-    //For change in input values
-    if ((item.trigger == "change") && (prevItem.trigger == "click")) {
-      recordingList[recordingList.length - 1] = item;
-      return;
-    }
+    // //For change in input values
+    // if ((item.trigger == "change") && (prevItem.trigger == "click")) {
+    //   recordingList[recordingList.length - 1] = item;
+    //   return;
+    // }
   }
 
   recordingList.push(item);
