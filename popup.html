@@ -13,12 +13,16 @@
         <h3>
           <u>Robotic</u>
         </h3>
+
         <form>
           <div class="form-group" id="testCaseNameDiv">
-            <input class="form-control" id="testCaseName" placeholder="Test Case Name" value="Default">
+            <input class="form-control" id="testCaseName" placeholder="Test Case Name">
           </div>
           <div class="form-group" id="postUrlDiv">
-            <input class="form-control" id="postUrl" placeholder="Post URL" value="http://localhost:3000/test_cases">
+            <input class="form-control" id="postUrl" placeholder="Post URL">
+          </div>
+          <div class="form-group" id="authTokenDiv">
+            <input class="form-control" id="authToken" placeholder="Auth Token">
           </div>
           <button class="btn btn-success" id="record" tabindex="-1" title="record user action">
             Start Recording
@@ -26,10 +30,13 @@
         </form>
 
         <div>
-          <button class="btn btn-info" id="assert" tabindex="-1" title="assert text">
-            Assert
+          <br>
+          <button class='btn btn-primary' id='locator'>
+            Get Location
           </button>
+        </div>
 
+        <div>
           <button class="btn btn-danger" id="stop" tabindex="-1" title="stop the recording">
             Stop
           </button>

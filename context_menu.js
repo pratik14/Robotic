@@ -30,15 +30,13 @@ var ContextMenu = {
 
 
     chrome.contextMenus.onClicked.addListener(function(clickData){
-      var roboticOpt = allOpt.indexOf(clickData.menuItemId) != -1;
+      // var roboticOpt = allOpt.indexOf(clickData.menuItemId) != -1;
+      var roboticOpt = true;
       if (roboticOpt){
         var content = host.tabs;
         content.query({active: true}, (tabs) => {
           var opt_name = clickData.menuItemId;
-          if(clickData.parentMenuItemId != 'Robotic'){
-            opt_name = clickData.parentMenuItemId + ' ' + opt_name
-          }
-          content.sendMessage(tabs[0].id, { operation: "yee", opt_name: opt_name });
+          content.sendMessage(tabs[0].id, { operation: "contextMenuClick", opt_name: opt_name });
         });
       }
     });

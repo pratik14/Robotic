@@ -15,10 +15,6 @@ host.runtime.onMessage.addListener(
       document.addEventListener("change", recordChange, true);
       document.addEventListener("click", recordClick, true);
     }
-    else if (request.operation == "assert") {
-      document.addEventListener('keydown', recordKeyDown, true);
-      document.addEventListener('mousemove', recordMouseMovement, true);
-    }
     else if (request.operation == "stop") {
       Selection.unSelected();
       Selection.clearHighlights();
@@ -27,19 +23,14 @@ host.runtime.onMessage.addListener(
       document.removeEventListener('keydown', recordKeyDown, true);
       document.removeEventListener('mousemove', recordMouseMovement, true);
     }
-    else if (request.operation == "yee") {
+    else if (request.operation == "contextMenuClick") {
       contextMenuClickedItem = request.opt_name;
       document.addEventListener('keydown', recordKeyDown, true);
       document.addEventListener('mousemove', recordMouseMovement, true);
-      // var cusid_ele = document.getElementsByClassName('xh-selected');
-      // var time = getTime();
-      // for (var i = 0; i < cusid_ele.length; ++i) {
-      //   var item = cusid_ele[i];
-      //   let attr = {time: time, xpath: XPath.get(item), value: item.innerText , trigger: request.opt_name };
-      //   host.runtime.sendMessage({operation: "action", script: attr});
-      //   time = time + 21;
-      // }
-      // stopAsserting();
+    }
+    else if (request.operation == "getLocator") {
+      document.addEventListener('keydown', copyLocator, true);
+      document.addEventListener('mousemove', recordMouseMovement, true);
     }
   }
 );
@@ -49,9 +40,8 @@ function getTime(){
 }
 
 function recordChange(event){
-  let attr = {time: getTime(), xpath: XPath.get(event.target), value: event.target.value};
   if (handleByChange(event.target)) {
-    Object.assign(attr, {trigger: "change"});
+    let attr = {time: getTime(), locator: XPath.get(event.target), text: event.target.value, trigger: "Input Text"};
     host.runtime.sendMessage({operation: "action", script: attr});
   }
 }
@@ -61,9 +51,16 @@ function recordClick(event){
   if(typeof(event.target.value) == "undefined"){
     value = event.target.innerText;
   }
-  let attr = {time: getTime(), xpath: XPath.get(event.target), value: value };
+  let attr = {time: getTime(), locator: XPath.get(event.target), value: value };
+  var type = event.target.tagName.toUpperCase();
+  if(type =! 'INPUT'){
+    Object.assign(attr, {text: value, message: 'click on button ' + value });
+  }
+  else{
+    Object.assign(attr, {value: value, message: 'change input to ' + value });
+  }
   if (!handleByChange(event.target)) {
-    Object.assign(attr, {trigger: "click"});
+    Object.assign(attr, {trigger: "Click Element"});
     host.runtime.sendMessage({operation: "action", script: attr});
   }
 }
@@ -79,16 +76,28 @@ function recordMouseMovement(event) {
 function recordKeyDown(event) {
   var ctrlKey = event.ctrlKey || event.metaKey;
   var shiftKey = event.shiftKey;
+  var type = event.target.tagName.toUpperCase();
 
-  if (!ctrlKey && event.keyCode === SHIFT_KEYCODE) {
+  if (!ctrlKey && event.keyCode === SHIFT_KEYCODE && type != 'INPUT') {
     Selection.selected(currEl)
-    let attr = {time: getTime(), xpath: XPath.get(currEl), value: currEl.innerText , trigger: contextMenuClickedItem };
+    let attr = {time: getTime(), locator: XPath.get(currEl), expected: currEl.innerText, text: currEl.innerText, trigger: contextMenuClickedItem };
     host.runtime.sendMessage({operation: "action", script: attr});
   }
 
   if (!ctrlKey && event.keyCode === ESC_KEYCODE) {
     stopAsserting();
     contextMenuClickedItem = '';
+  }
+};
+
+function copyLocator(event) {
+  var ctrlKey = event.ctrlKey || event.metaKey;
+  var shiftKey = event.shiftKey;
+
+  if (!ctrlKey && event.keyCode === SHIFT_KEYCODE) {
+    Selection.selected(currEl)
+    stopAsserting();
+    alert(XPath.get(currEl));
   }
 };
 

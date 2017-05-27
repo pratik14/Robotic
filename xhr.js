@@ -3,19 +3,19 @@
 var Xhr = {
   defaultUrl: "http://localhost:3000/robotcorder_web/test_cases",
 
-  post(list, url, name){
+  post(list, url, name, authToken){
     var xhr = new XMLHttpRequest();
     xhr.open("POST", url, true);
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
-    // xhr.onreadystatechange = function() {
-    //   if (xhr.readyState == 4) {
-    //     alert(xhr.responseText);
-    //   }
-    // }
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState == 4) {
+        alert(xhr.responseText);
+      }
+    }
 
-    var params = {key: list, name: name};
+    var params = {key: list, name: name, auth_token: authToken};
     params = Xhr.serialize(params)
     xhr.send(params);
   },
