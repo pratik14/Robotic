@@ -118,32 +118,25 @@ function getLocator(){
 }
 
 function selection(item) {
-  //For record trigger
   item.order_number = recordingList.length + 1;
-  if (recordingList.length == 0) {
-    recordingList.push(item);
-    show_notification();
+  if (recordingList.length > 2) {
+   
+    // Time diffrence between events should be atlease 20 miliseconds
+    let prevItem = recordingList[recordingList.length - 1];
+    if (Math.abs(item.time - prevItem.time) < 20) {
+      return;
+    }
+
+    if (item.trigger == "click")
     return;
+
+    //For change in input values
+    if ((item.trigger == "change") && (prevItem.trigger == "click")) {
+      recordingList[recordingList.length - 1] = item;
+      return;
+    }
   }
 
-  // Time diffrence between events should be atlease 20 miliseconds
-  let prevItem = recordingList[recordingList.length - 1];
-  if (Math.abs(item.time - prevItem.time) > 20) {
-    recordingList.push(item);
-    show_notification();
-    return;
-  }
-
-  if (item.trigger == "click")
-  return;
-
-  //For change in input values
-  if ((item.trigger == "change") && (prevItem.trigger == "click")) {
-    recordingList[recordingList.length - 1] = item;
-    return;
-  }
-
-  //For load and set_window_size
   recordingList.push(item);
   show_notification();
 }
