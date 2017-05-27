@@ -6,9 +6,7 @@ var SHIFT_KEYCODE = 16;
 var ESC_KEYCODE = 27;
 var currEl = null;
 var contextMenuClickedItem = '';
-
-host.runtime.sendMessage({operation: "load"});
-
+  
 host.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.operation == "record") {
@@ -22,6 +20,9 @@ host.runtime.onMessage.addListener(
       document.removeEventListener("click", recordClick, true);
       document.removeEventListener('keydown', recordKeyDown, true);
       document.removeEventListener('mousemove', recordMouseMovement, true);
+    }
+    else if(request.operation == 'load') {
+      host.runtime.sendMessage({operation: "load"});
     }
     else if (request.operation == "contextMenuClick") {
       contextMenuClickedItem = request.opt_name;

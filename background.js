@@ -12,6 +12,13 @@ const tab = {active: true, currentWindow: true};
 
 storage.set({operation: 'stop'});
 
+chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+  if(changeInfo.status === 'complete'){
+    onLoad();
+  }
+}); 
+
+
 host.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     let operation = request.operation;
@@ -122,7 +129,7 @@ function getLocator(){
 function selection(item) {
   item.order_number = recordingList.length + 1;
   if (recordingList.length > 1) {
-   
+
     // Time diffrence between events should be atlease 20 miliseconds
     let prevItem = recordingList[recordingList.length - 1];
     if (Math.abs(item.time - prevItem.time) < 20) {
