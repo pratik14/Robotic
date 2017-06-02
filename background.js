@@ -72,11 +72,6 @@ function startRecording(){
       trigger: 'Open Browser',
       message: 'Open Browser'
     })
-    selection({
-      trigger: 'Set Window Size',
-      time: 21,
-      message: 'Set window size'
-    })
     content.sendMessage(tabs[0].id, { operation: 'record' });
   })
 }
