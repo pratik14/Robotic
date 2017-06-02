@@ -59,15 +59,22 @@ function recordChange(event){
 }
 
 function recordClick(event){
-  var value = event.target.value;
-  if(typeof(event.target.value) == "undefined"){
-    value = event.target.innerText;
+  let attr = {
+      time: getTime(), 
+      locator: XPath.get(event.target), 
+    };
+  
+  if( formSubmitOnEnter(event) ){
+    Object.assign(attr, { trigger:  "Submit Form" });
+  } else {
+    let clickAttrs =  { 
+      trigger:  "Click Element", 
+      value: event.target.innerText
+    }
+    Object.assign(attr, clickAttrs);
   }
-  let attr = {time: getTime(), locator: XPath.get(event.target), value: value };
-  var type = event.target.tagName.toUpperCase();
-  Object.assign(attr, {text: value, message: 'Click on button ' + value });
+  
   if (!handleByChange(event.target)) {
-    Object.assign(attr, {trigger: "Click Element"});
     host.runtime.sendMessage({operation: "action", script: attr});
   }
 }
@@ -118,8 +125,13 @@ function stopAsserting(){
 
 function handleByChange(target){
   var type = event.target.tagName.toUpperCase();
-  if(type == 'INPUT' && event.target.type.toUpperCase() == 'SUBMIT'){
+  if( formSubmitOnEnter(event) ){
     return false;
   }
   return ["INPUT", "FILE", "SELECT"].some(n => type === n);
+}
+
+function formSubmitOnEnter(event){
+  var type = event.target.tagName.toUpperCase();
+  return (type == 'INPUT' && event.target.type.toUpperCase() == 'SUBMIT')
 }
