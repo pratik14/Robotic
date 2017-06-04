@@ -127,7 +127,7 @@ function selection(item) {
 
     // Time diffrence between events should be atlease 20 miliseconds
     let prevItem = recordingList[recordingList.length - 1];
-    if(item.trigger != 'Submit Form'){
+    if(item.value != 'Submit Form'){
       if (Math.abs(item.time - prevItem.time) < 20) {
         return;
       }

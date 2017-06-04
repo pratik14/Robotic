@@ -61,20 +61,12 @@ function recordChange(event){
 function recordClick(event){
   let attr = {
       time: getTime(), 
-      locator: XPath.get(event.target), 
+      locator: XPath.get(event.target),
+      trigger: "Click Element", 
+      value: formSubmitOnEnter(event) ? "Submit Form" :event.target.innerText 
     };
   
-  if( formSubmitOnEnter(event) ){
-    Object.assign(attr, { trigger:  "Submit Form" });
-  } else {
-    let clickAttrs =  { 
-      trigger:  "Click Element", 
-      value: event.target.innerText
-    }
-    Object.assign(attr, clickAttrs);
-  }
-  
-  if (!handleByChange(event.target)) {
+  if (validClickEvent(event.target)) {
     host.runtime.sendMessage({operation: "action", script: attr});
   }
 }
@@ -122,6 +114,10 @@ function stopAsserting(){
   document.removeEventListener('mousemove', recordMouseMovement, true);
 }
 
+
+function validClickEvent(target){
+  return !handleByChange(target)
+}
 
 function handleByChange(target){
   var type = event.target.tagName.toUpperCase();
