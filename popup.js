@@ -34,6 +34,7 @@ function operation(e) {
     var authToken = document.getElementById('authToken').value;
 
     storage.set({url: url, name: name, authToken: authToken});
+    window.close();
   }
 }
 
