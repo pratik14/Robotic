@@ -9,32 +9,45 @@ var contextMenuClickedItem = '';
   
 host.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
-    if (request.operation == "record") {
-      document.addEventListener("change", recordChange, true);
-      document.addEventListener("click", recordClick, true);
-    }
-    else if (request.operation == "stop") {
-      Selection.unSelected();
-      Selection.clearHighlights();
-      document.removeEventListener("change", recordChange, true);
-      document.removeEventListener("click", recordClick, true);
-      document.removeEventListener('keydown', recordKeyDown, true);
-      document.removeEventListener('mousemove', recordMouseMovement, true);
-    }
-    else if(request.operation == 'load') {
-      host.runtime.sendMessage({operation: "load"});
-    }
-    else if (request.operation == "contextMenuClick") {
-      contextMenuClickedItem = request.opt_name;
-      document.addEventListener('keydown', recordKeyDown, true);
-      document.addEventListener('mousemove', recordMouseMovement, true);
-    }
-    else if (request.operation == "getLocator") {
-      document.addEventListener('keydown', copyLocator, true);
-      document.addEventListener('mousemove', recordMouseMovement, true);
+    switch(request.operation){
+      case 'record':
+        startListeningClickAndChange()
+        break;
+      case 'stop':
+        Selection.unSelected();
+        Selection.clearHighlights();
+        stopListening()
+        break;
+      case 'load':
+        host.runtime.sendMessage({operation: "load"});
+        break;
+      case 'contextMenuClick':
+        contextMenuClickedItem = request.opt_name;
+        startListeningMouseMovement()
+        break;
+      case 'getLocator':
+        startListeningMouseMovement()
+        break;
     }
   }
 );
+
+function startListeningClickAndChange(){
+  document.addEventListener("change", recordChange, true);
+  document.addEventListener("click", recordClick, true);
+}
+
+function stopListening(){
+  document.removeEventListener("change", recordChange, true);
+  document.removeEventListener("click", recordClick, true);
+  document.removeEventListener('keydown', recordKeyDown, true);
+  document.removeEventListener('mousemove', recordMouseMovement, true);
+}
+
+function startListeningMouseMovement(){
+  document.addEventListener('keydown', recordKeyDown, true);
+  document.addEventListener('mousemove', recordMouseMovement, true);
+}
 
 function getTime(){
   return new Date().getTime();
