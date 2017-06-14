@@ -103,11 +103,17 @@ function recordKeyDown(event) {
     host.runtime.sendMessage({operation: "action", script: attr});
   }
 
+  stopTrackingMouse(event)
+};
+
+function stopTrackingMouse(event){
+  var ctrlKey = event.ctrlKey || event.metaKey;
+
   if (!ctrlKey && event.keyCode === ESC_KEYCODE) {
     stopAsserting();
     contextMenuClickedItem = '';
   }
-};
+}
 
 function copyLocator(event) {
   var ctrlKey = event.ctrlKey || event.metaKey;
