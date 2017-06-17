@@ -22,12 +22,16 @@ class BrowserEvent {
   }
 
   clickAttrs(){
+   let display_message =  this.event.target.innerText
+   if( this.formSubmitOnEnter() ){
+     display_message = this.event.target.value;
+   }
    return {
      operation: 'action',
      trigger: 'Click',
      time: this.getTime(),
      locator: XPath.get(this.event.target),
-     display_message: 'Text: ' + this.event.target.innerText
+     display_message: 'Text: ' + display_message 
    }
   }
 
@@ -92,10 +96,11 @@ class BrowserEvent {
     var ESC_KEYCODE = 27;
     switch( this.event.type ){
       case 'click':
-        if( this.formSubmitOnEnter() ){ return false; }
+        if( this.formSubmitOnEnter() ){ return true; }
         return !( ["INPUT", "FILE", "SELECT"].some(n => type === n) );
         break;
       case 'change':
+        if( this.formSubmitOnEnter() ){ return false; }
         return ["INPUT", "FILE", "SELECT"].some(n => type === n);
         break;
       case 'keydown':
@@ -104,7 +109,7 @@ class BrowserEvent {
     }
   }
 
-  formSubmitOnEnter(type, event){
-    return (this.targetTag() == 'INPUT' && this.targetTag() == 'SUBMIT')
+  formSubmitOnEnter(){
+    return (this.targetTag() == 'INPUT' && this.targetType() == 'SUBMIT')
   }
 }
