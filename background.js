@@ -40,7 +40,7 @@ host.runtime.onMessage.addListener(
         postList();
         break;
       case 'action':
-        selection(request.script);
+        selection(request);
         break;
       case 'load':
         onLoad();
@@ -66,12 +66,7 @@ function startRecording(){
   ContextMenu.add();
   content.query(tab, (tabs) => {
     recordTab = tabs[0];
-    selection({
-      url: recordTab.url,
-      time: 0,
-      trigger: 'Open Browser',
-      message: 'Open Browser'
-    })
+    selection( new BrowserEvent({}).goToAttrs(recordTab.url) )
     content.sendMessage(tabs[0].id, { operation: 'record' });
   })
 }
@@ -91,11 +86,7 @@ function onLoad(){
   });
   chrome.tabs.getSelected(null,function(tab) {
     var tablink = tab.url;
-    selection({ trigger: 'Wait For Condition',
-                condition: "return document.readyState == 'complete'",
-                time: new Date().getTime(),
-                message: 'Go to page' + tablink
-              });
+    selection( new BrowserEvent({}).onLoadAttrs() )
   });
 }
 
@@ -150,16 +141,17 @@ function selection(item) {
 function show_notification(){
   var item = recordingList[recordingList.length - 1];
 
-  if(noNotificationList.indexOf(item.trigger) > -1) { return; }
+  if(!item.display_message) { return; }
 
-  var message = item.trigger + '-' + item.value;
+  name = + new Date()
   var notifOptions = {
     type: "basic",
     iconUrl: "images/icon-48.png",
     title: "Event Added",
-    message: message
+    message: item.display_message
   };
-  chrome.notifications.create('Event', notifOptions);
+
+  chrome.notifications.create(name,  notifOptions);
 }
 
 function recordingStarted(){

@@ -6,7 +6,7 @@
   "description": "Record user activity on browser and send them on specified URL",
 
   "background": {
-    "scripts": ["constant.js", "xhr.js", "context_menu.js", "background.js"],
+    "scripts": ["browser_event.js", "constant.js", "xhr.js", "context_menu.js", "background.js"],
     "persistent": true
   },
 
@@ -15,7 +15,7 @@
       "<all_urls>"
     ],
 
-    "js": ["selection.js", "content.js"],
+    "js": ["browser_event.js", "selection.js", "content.js"],
     "css": ["selection.css"],
     "run_at": "document_end",
     "all_frames": false

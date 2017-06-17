@@ -23,28 +23,28 @@ host.runtime.onMessage.addListener(
         break;
       case 'contextMenuClick':
         contextMenuClickedItem = request.opt_name;
-        startListeningMouseMovement()
+        trackMouseMovement()
         break;
       case 'getLocator':
-        startListeningMouseMovement()
+        trackMouseMovement()
         break;
     }
   }
 );
 
 function startListeningClickAndChange(){
-  document.addEventListener("change", recordChange, true);
-  document.addEventListener("click", recordClick, true);
+  document.addEventListener("change", addEvent, true);
+  document.addEventListener("click", addEvent, true);
 }
 
 function stopListening(){
-  document.removeEventListener("change", recordChange, true);
-  document.removeEventListener("click", recordClick, true);
+  document.removeEventListener("change", addEvent, true);
+  document.removeEventListener("click", addEvent, true);
   document.removeEventListener('keydown', recordKeyDown, true);
   document.removeEventListener('mousemove', recordMouseMovement, true);
 }
 
-function startListeningMouseMovement(){
+function trackMouseMovement(){
   document.addEventListener('keydown', recordKeyDown, true);
   document.addEventListener('mousemove', recordMouseMovement, true);
 }
@@ -53,38 +53,18 @@ function getTime(){
   return new Date().getTime();
 }
 
-function recordChange(event){
-  var value = event.target.value;
-  if(typeof(event.target.value) == "undefined"){
-    value = event.target.innerText;
-  }
+function addEvent(event){
+  let browserEvent = new BrowserEvent(event)
+  if( browserEvent.valid() ){
+    //Mark selected section if trigger is green
+    if(event.type == 'hover'){ Selection.selected(currEl) }
 
-  if (handleByChange(event.target)) {
-    let attr = {
-      time: getTime(), 
-      locator: XPath.get(event.target), 
-      value: value,
-      text: event.target.value, 
-      trigger: "Input Text"
-    };
-    host.runtime.sendMessage({operation: "action", script: attr});
-  }
-}
-
-function recordClick(event){
-  let attr = {
-      time: getTime(), 
-      locator: XPath.get(event.target),
-      trigger: "Click Element", 
-      value: formSubmitOnEnter(event) ? "Submit Form" :event.target.innerText 
-    };
-  
-  if (validClickEvent(event.target)) {
-    host.runtime.sendMessage({operation: "action", script: attr});
+    host.runtime.sendMessage( browserEvent.getAttrs() );
   }
 }
 
 function recordMouseMovement(event) {
+  // return if cursor is on same position
   if (currEl === event.toElement) {
     return;
   }
@@ -93,16 +73,7 @@ function recordMouseMovement(event) {
 };
 
 function recordKeyDown(event) {
-  var ctrlKey = event.ctrlKey || event.metaKey;
-  var shiftKey = event.shiftKey;
-  var type = event.target.tagName.toUpperCase();
-
-  if (!ctrlKey && event.keyCode === SHIFT_KEYCODE && type != 'INPUT') {
-    Selection.selected(currEl)
-    let attr = {time: getTime(), locator: XPath.get(currEl), expected: currEl.innerText, text: currEl.innerText, trigger: contextMenuClickedItem };
-    host.runtime.sendMessage({operation: "action", script: attr});
-  }
-
+  addEvent(event)
   stopTrackingMouse(event)
 };
 
@@ -131,22 +102,4 @@ function stopAsserting(){
   Selection.clearHighlights();
   document.removeEventListener('keydown', recordKeyDown, true);
   document.removeEventListener('mousemove', recordMouseMovement, true);
-}
-
-
-function validClickEvent(target){
-  return !handleByChange(target)
-}
-
-function handleByChange(target){
-  var type = event.target.tagName.toUpperCase();
-  if( formSubmitOnEnter(event) ){
-    return false;
-  }
-  return ["INPUT", "FILE", "SELECT"].some(n => type === n);
-}
-
-function formSubmitOnEnter(event){
-  var type = event.target.tagName.toUpperCase();
-  return (type == 'INPUT' && event.target.type.toUpperCase() == 'SUBMIT')
 }
