@@ -147,7 +147,7 @@ function show_notification(){
   var notifOptions = {
     type: "basic",
     iconUrl: "images/icon-48.png",
-    title: "Event Added",
+    title: item.trigger.toUpperCase() + " Event",
     message: item.display_message
   };
 

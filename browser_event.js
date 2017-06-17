@@ -27,7 +27,7 @@ class BrowserEvent {
      trigger: 'Click',
      time: this.getTime(),
      locator: XPath.get(this.event.target),
-     display_message: 'Element CLicked'
+     display_message: 'Text: ' + this.event.target.innerText
    }
   }
 
@@ -38,7 +38,7 @@ class BrowserEvent {
      time: this.getTime(),
      text: this.event.target.value,
      locator: XPath.get(this.event.target),
-     display_message: 'Element Changed'
+     display_message: 'Txt Change: ' + this.event.target.value
    }
   }
 
@@ -63,10 +63,10 @@ class BrowserEvent {
 
   goToAttrs(url){
     return {
-      trigger: 'GoTO',
+      trigger: 'GoTo',
       time: this.getTime(),
       url: url,
-      display_message: 'Goto URL'
+      display_message: 'Goto URL: ' + url
     }
   }
 
