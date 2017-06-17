@@ -57,7 +57,7 @@ function addEvent(event){
   let browserEvent = new BrowserEvent(event)
   if( browserEvent.valid() ){
     //Mark selected section if trigger is green
-    if(event.type == 'hover'){ Selection.selected(currEl) }
+    if(event.type == 'keydown'){ Selection.selected(currEl) }
 
     host.runtime.sendMessage( browserEvent.getAttrs() );
   }
@@ -73,7 +73,11 @@ function recordMouseMovement(event) {
 };
 
 function recordKeyDown(event) {
-  addEvent(event)
+  let browserEvent = new BrowserEvent(event)
+  if( browserEvent.valid() ){
+    Selection.selected(currEl)
+    host.runtime.sendMessage( browserEvent.keydownAttrs(currEl, contextMenuClickedItem) );
+  }
   stopTrackingMouse(event)
 };
 

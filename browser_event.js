@@ -11,8 +11,8 @@ class BrowserEvent {
       case 'change':
         return this.changeAttrs();
         break
-      case 'hover':
-        return this.hoverAttrs();
+      case 'keydown':
+        return this.keydownAttrs();
         break
     }
   }
@@ -42,14 +42,14 @@ class BrowserEvent {
    }
   }
 
-  hoverAttrs(){
+  keydownAttrs(currEl, trigger){
    return {
      operation: 'action',
-     trigger: 'Hover',
+     trigger: trigger,
      time: this.getTime(),
-     text: this.event.target.value,
-     locator: XPath.get(this.event.target),
-     display_message: 'Element hovered'
+     text: currEl.innerText,
+     locator: XPath.get( currEl ),
+     display_message: 'Text: ' + currEl.innerText
    }
   }
 
@@ -98,7 +98,7 @@ class BrowserEvent {
       case 'change':
         return ["INPUT", "FILE", "SELECT"].some(n => type === n);
         break;
-      case 'hover':
+      case 'keydown':
         return (!this.ctrlKey() && this.event.keyCode === SHIFT_KEYCODE && type != 'INPUT')
         break;
     }
