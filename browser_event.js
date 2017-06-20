@@ -31,6 +31,7 @@ class BrowserEvent {
      trigger: 'Click',
      time: this.getTime(),
      locator: XPath.get(this.event.target),
+     text: display_message,
      display_message: 'Text: ' + display_message 
    }
   }

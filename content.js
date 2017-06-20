@@ -74,7 +74,7 @@ function recordMouseMovement(event) {
 
 function recordKeyDown(event) {
   let browserEvent = new BrowserEvent(event)
-  if( browserEvent.valid() ){
+  if( browserEvent.valid() && currEl.innerText){
     Selection.selected(currEl)
     host.runtime.sendMessage( browserEvent.keydownAttrs(currEl, contextMenuClickedItem) );
   }

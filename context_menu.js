@@ -11,7 +11,7 @@ var ContextMenu = {
 
     for (var key in contextMenuOptions) {
       chrome.contextMenus.create({
-        id: key,
+        id: contextMenuOptions[key],
         title: contextMenuOptions[key],
         parentId: 'Robotic'
       });
