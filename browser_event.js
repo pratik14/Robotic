@@ -22,18 +22,27 @@ class BrowserEvent {
   }
 
   clickAttrs(){
-   let display_message =  this.event.target.innerText
-   if( this.formSubmitOnEnter() ){
-     display_message = this.event.target.value;
-   }
-   return {
-     operation: 'action',
-     trigger: 'Click',
-     time: this.getTime(),
-     locator: XPath.get(this.event.target),
-     text: display_message,
-     display_message: 'Text: ' + display_message 
-   }
+    if( this.formSubmitOnEnter() ){
+      var closest_form = this.closest(this.event.target, 'form');
+      return {
+        operation: 'action',
+        trigger: 'Submit',
+        time: this.getTime(),
+        locator: XPath.get(closest_form),
+        text: this.event.target.value,
+        display_message: 'Text: ' + this.event.target.value
+      }
+
+    } else {
+      return {
+        operation: 'action',
+        trigger: 'Click',
+        time: this.getTime(),
+        locator: XPath.get(this.event.target),
+        text: this.event.target.text,
+        display_message: 'Text: ' + this.event.target.innerText
+      }
+    }
   }
 
   changeAttrs(){
@@ -112,5 +121,17 @@ class BrowserEvent {
 
   formSubmitOnEnter(){
     return (this.targetTag() == 'INPUT' && this.targetType() == 'SUBMIT')
+  }
+
+  closest(el, selector) {
+    var matchesSelector = el.matches || el.webkitMatchesSelector || el.mozMatchesSelector || el.msMatchesSelector;
+
+    while (el) {
+      if (matchesSelector.call(el, selector)) {
+        break;
+      }
+      el = el.parentElement;
+    }
+    return el;
   }
 }
