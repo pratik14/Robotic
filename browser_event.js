@@ -134,8 +134,10 @@ class BrowserEvent {
     var ESC_KEYCODE = 27;
     switch( this.event.type ){
       case 'click':
-        if( this.formSubmitOnEnter() ){ return true; }
-        return !( ["INPUT", "FILE", "SELECT"].some(n => type === n) );
+        if( this.checkBox() || this.selectButton() ){
+          return false;
+        }
+        return true;
         break;
       case 'change':
         if( this.formSubmitOnEnter() ){ return false; }
