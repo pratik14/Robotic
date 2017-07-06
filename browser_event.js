@@ -1,6 +1,7 @@
 class BrowserEvent {
   constructor(event) {
     this.event = event;
+    this.target = event.target;
   }
 
   getAttrs(){
@@ -34,13 +35,17 @@ class BrowserEvent {
       }
     }
     else {
+      var display_message = '';
+      if( this.target.innerText ){
+        display_message = 'Text: ' + this.target.innerText;
+      }
       return {
         operation: 'action',
         trigger: 'Click',
         time: this.getTime(),
         locator: XPath.get(this.event.target),
         text: this.event.target.text,
-        display_message: 'Text: ' + this.event.target.innerText
+        display_message: display_message
       }
     }
   }
