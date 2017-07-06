@@ -32,8 +32,8 @@ class BrowserEvent {
         text: this.event.target.value,
         display_message: 'Text: ' + this.event.target.value
       }
-
-    } else {
+    }
+    else {
       return {
         operation: 'action',
         trigger: 'Click',
@@ -46,14 +46,42 @@ class BrowserEvent {
   }
 
   changeAttrs(){
-   return {
-     operation: 'action',
-     trigger: 'Change',
-     time: this.getTime(),
-     text: this.event.target.value,
-     locator: XPath.get(this.event.target),
-     display_message: 'Txt Change: ' + this.event.target.value
-   }
+    if( this.selectButton() ) {
+      var selectedIndex = this.event.target.selectedIndex;
+      var text = this.event.target.options[selectedIndex].text;
+      return {
+        operation: 'action',
+        trigger: 'Select',
+        time: this.getTime(),
+        locator: XPath.get(this.event.target),
+        text: text,
+        display_message: 'Select option with text: ' + text,
+      }
+    } else if( this.checkBox() ){
+      var selected = this.event.target.checked;
+      if(selected == 1){
+        var display_message = 'Checkbox should be selected';
+      } else{
+        var display_message = 'Checkbox should not be selected';
+      }
+      return {
+        operation: 'action',
+        trigger: 'Checbox',
+        time: this.getTime(),
+        locator: XPath.get(this.event.target),
+        text: selected,
+        display_message: display_message,
+      }
+    } else {
+      return {
+        operation: 'action',
+        trigger: 'Change',
+        time: this.getTime(),
+        text: this.event.target.value,
+        locator: XPath.get(this.event.target),
+        display_message: 'Txt Change: ' + this.event.target.value
+      }
+    }
   }
 
   keydownAttrs(currEl, trigger){
@@ -121,6 +149,14 @@ class BrowserEvent {
 
   formSubmitOnEnter(){
     return (this.targetTag() == 'INPUT' && this.targetType() == 'SUBMIT')
+  }
+
+  selectButton(){
+    return (this.event.target.type == 'select-one')
+  }
+
+  checkBox(){
+    return (this.event.target.type == 'checkbox')
   }
 
   closest(el, selector) {
