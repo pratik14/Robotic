@@ -6,7 +6,8 @@ var SHIFT_KEYCODE = 16;
 var ESC_KEYCODE = 27;
 var currEl = null;
 var contextMenuClickedItem = '';
-  
+var copyLocation = false;
+
 host.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     switch(request.operation){
@@ -26,6 +27,7 @@ host.runtime.onMessage.addListener(
         trackMouseMovement()
         break;
       case 'getLocator':
+        copyLocation = true;
         trackMouseMovement()
         break;
     }
@@ -75,8 +77,15 @@ function recordMouseMovement(event) {
 function recordKeyDown(event) {
   let browserEvent = new BrowserEvent(event)
   if( browserEvent.valid() && currEl.innerText){
-    Selection.selected(currEl)
-    host.runtime.sendMessage( browserEvent.keydownAttrs(currEl, contextMenuClickedItem) );
+    if( copyLocation ){
+      copyLocation = false;
+      stopAsserting();
+      copyTextToClipboard( XPath.get(currEl) );
+      alert('Location is copied to clipboard');
+    } else {
+      Selection.selected(currEl)
+      host.runtime.sendMessage( browserEvent.keydownAttrs(currEl, contextMenuClickedItem) );
+    }
   }
   stopTrackingMouse(event)
 };
@@ -85,25 +94,24 @@ function stopTrackingMouse(event){
   var ctrlKey = event.ctrlKey || event.metaKey;
 
   if (!ctrlKey && event.keyCode === ESC_KEYCODE) {
-    stopAsserting();
     contextMenuClickedItem = '';
+    stopAsserting();
   }
 }
-
-function copyLocator(event) {
-  var ctrlKey = event.ctrlKey || event.metaKey;
-  var shiftKey = event.shiftKey;
-
-  if (!ctrlKey && event.keyCode === SHIFT_KEYCODE) {
-    Selection.selected(currEl)
-    stopAsserting();
-    alert(XPath.get(currEl));
-  }
-};
 
 function stopAsserting(){
   Selection.unSelected();
   Selection.clearHighlights();
   document.removeEventListener('keydown', recordKeyDown, true);
   document.removeEventListener('mousemove', recordMouseMovement, true);
+}
+
+function copyTextToClipboard(text) {
+  var copyFrom = document.createElement("textarea");
+  copyFrom.textContent = text;
+  var body = document.getElementsByTagName('body')[0];
+  body.appendChild(copyFrom);
+  copyFrom.select();
+  document.execCommand('copy');
+  body.removeChild(copyFrom);
 }
