@@ -71,7 +71,7 @@ class BrowserEvent {
       }
       return {
         operation: 'action',
-        trigger: 'Checbox',
+        trigger: 'Checkbox',
         time: this.getTime(),
         locator: XPath.get(this.event.target),
         text: selected,
