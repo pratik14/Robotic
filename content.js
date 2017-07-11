@@ -76,7 +76,7 @@ function recordMouseMovement(event) {
 
 function recordKeyDown(event) {
   let browserEvent = new BrowserEvent(event)
-  if( browserEvent.valid() && currEl.innerText){
+  if( browserEvent.valid() ){
     if( copyLocation ){
       copyLocation = false;
       stopAsserting();

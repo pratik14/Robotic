@@ -51,7 +51,15 @@ class BrowserEvent {
   }
 
   changeAttrs(){
-    if( this.selectButton() ) {
+    if( this.fileButton() ){
+      return {
+        operation: 'action',
+        trigger: 'File',
+        time: this.getTime(),
+        locator: XPath.get(this.event.target),
+        display_message: 'File: ' + this.target.files[0].name,
+      }
+    } else if( this.selectButton() ) {
       var selectedIndex = this.event.target.selectedIndex;
       var text = this.event.target.options[selectedIndex].text;
       return {
@@ -149,9 +157,13 @@ class BrowserEvent {
         return ["INPUT", "FILE", "SELECT"].some(n => type === n);
         break;
       case 'keydown':
-        return (!this.ctrlKey() && this.event.keyCode === SHIFT_KEYCODE && type != 'INPUT')
+        return (!this.ctrlKey() && this.event.keyCode === SHIFT_KEYCODE)
         break;
     }
+  }
+
+  fileButton(){
+    return (this.event.target.type == 'file')
   }
 
   formSubmitOnEnter(){
