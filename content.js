@@ -55,13 +55,29 @@ function getTime(){
   return new Date().getTime();
 }
 
+function getElementByXpath(path) {
+  return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+}
+
 function addEvent(event){
   let browserEvent = new BrowserEvent(event)
   if( browserEvent.valid() ){
     //Mark selected section if trigger is green
     if(event.type == 'keydown'){ Selection.selected(currEl) }
 
-    host.runtime.sendMessage( browserEvent.getAttrs() );
+    var item = browserEvent.getAttrs();
+
+    if(item.trigger == 'File'){
+      var reader = new FileReader();
+      reader.onload = function(){
+        item.uploaded_file = reader.result;
+        host.runtime.sendMessage( item );
+      };
+      var input = getElementByXpath(item.locator);
+      reader.readAsDataURL(input.files[0])
+    } else {
+      host.runtime.sendMessage( item );
+    }
   }
 }
 
